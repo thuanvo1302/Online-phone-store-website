@@ -1,0 +1,145 @@
+<body class="  ">
+    <!-- loader Start -->
+    <div id="loading">
+        <div id="loading-center">
+        </div>
+    </div>
+    <!-- loader END -->
+    <!-- Wrapper Start -->
+    <div class="wrapper">
+
+        {{> sidebar }}
+        {{> navbar }}
+        <div class="modal fade" id="new-order" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="popup text-left">
+                            <h4 class="mb-3">New Order</h4>
+                            <div class="content create-workform bg-body">
+                                <div class="pb-3">
+                                    <label class="mb-2">Email</label>
+                                    <input type="text" class="form-control" placeholder="Enter Name or Email">
+                                </div>
+                                <div class="col-lg-12 mt-4">
+                                    <div class="d-flex flex-wrap align-items-ceter justify-content-center">
+                                        <div class="btn btn-primary mr-4" data-dismiss="modal">Cancel</div>
+                                        <div class="btn btn-outline-primary" data-dismiss="modal">Create</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content-page">
+            <div class="container-fluid">
+                <div class="row" id="content"></div>
+            </div>
+        </div>
+    </div>
+    <!-- Wrapper End-->
+    {{> footer }}
+</body>
+
+<script>
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const phoneNumber = urlParams.get('phoneNumber');
+        const params = new URLSearchParams()
+        params.append('phoneNumber', phoneNumber)
+        axios({
+            method: 'get',
+            url: `/api/customers/history/${phoneNumber}`,
+        })
+            .then(res => {
+                if (res.status === 200 && res.data.code === 1) {
+                    const orders = res.data.data
+                    console.log(orders)
+                    const tableBody = document.getElementById('content')
+                    orders.forEach(order => {
+                        const tableRow = createTable(order)
+                        tableBody.appendChild(tableRow)
+                    })
+                }
+            })
+            .catch(err => console.log(err))
+
+        function createTable(order) {
+
+            const dateOfPurchase = new Date(order.dateOfPurchase);
+
+            const formattedDate = dateOfPurchase.toLocaleDateString('vi-VN', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+            }) + ' ' + dateOfPurchase.toLocaleTimeString('vi-VN', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+            });
+
+
+            const tableRow = document.createElement('div');
+            tableRow.classList.add('col-lg-12')
+            tableRow.innerHTML = `
+                        <div class="card card-block card-stretch card-height print rounded">
+                            <div class="card-header d-flex justify-content-between bg-primary header-invoice">
+                                <div class="iq-header-title">
+                                    <h4 class="card-title mb-0">Invoice ${order._id}</h4>
+                                </div>
+                                <div class="invoice-btn">
+                                    <a href="history/detail?idOrder=${order._id}"
+                                    type="button" class="btn btn-primary-dark">
+                                        <i class="las la-file-download"></i>
+                                        View Detail
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <img src="/images/logo.png" class="logo-invoice img-fluid mb-3">
+                                        <h5 class="mb-0">Thank you , ${order.fullname}</h5>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="table-responsive-sm">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Total Amount</th>
+                                                        <th scope="col">Money given </th>
+                                                        <th scope="col">Amount paid </th>
+                                                        <th scope="col">Date of purchase</th>
+                                                        <th scope="col">Product quantity </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>${order.totalAmount}</td>
+                                                        <td>${order.amountGivenByCustomer}</td>
+                                                        <td>
+                                                            ${order.excessAmountPaidBack}
+                                                        </td>
+                                                        <td>
+                                                            ${formattedDate}
+                                                        </td>
+                                                        <td>
+                                                            ${order.quantity}
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+            `
+            return tableRow
+        }
+    })
+</script>

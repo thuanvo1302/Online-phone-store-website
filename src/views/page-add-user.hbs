@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>POS Dash | Responsive Bootstrap 4 Admin Dashboard Template</title>
+
+
+</head>
+
+<body class="  ">
+    <!-- loader Start -->
+    <div id="loading">
+        <div id="loading-center">
+        </div>
+    </div>
+    <!-- loader END -->
+    <!-- Wrapper Start -->
+    <div class="wrapper">
+        {{> sidebar}}
+        {{> navbar}}
+        <div class="modal fade" id="new-order" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="popup text-left">
+                            <h4 class="mb-3">New Order</h4>
+                            <div class="content create-workform bg-body">
+                                <div class="pb-3">
+                                    <label class="mb-2">Email</label>
+                                    <input type="text" class="form-control" placeholder="Enter Name or Email">
+                                </div>
+                                <div class="col-lg-12 mt-4">
+                                    <div class="d-flex flex-wrap align-items-ceter justify-content-center">
+                                        <div class="btn btn-primary mr-4" data-dismiss="modal">Cancel</div>
+                                        <div class="btn btn-outline-primary" data-dismiss="modal">Create</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content-page">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xl-3 col-lg-4">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between">
+                                <div class="header-title">
+                                    <h4 class="card-title">Add New User</h4>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <form>
+                                    <div class="form-group">
+                                        <div class="crm-profile-img-edit position-relative">
+                                            <img class="crm-profile-pic rounded avatar-100" src="/images/user/11.png"
+                                                alt="profile-pic" id="profilePicture">
+                                            <div class="crm-p-image bg-primary">
+                                                <label for="btnUpload"><i class="las la-pen upload-button"></i></label>
+                                                <input type="file" name="file-upload" accept="image/*" id="btnUpload" hidden>
+                                            </div>
+                                        </div>
+                                        <span id="image_error" style="color: red"></span>
+                                        <div class="img-extension mt-3">
+                                            <div class="d-inline-block align-items-center">
+                                                <span>Only</span>
+                                                <a href="javascript:void();">.jpg</a>
+                                                <a href="javascript:void();">.png</a>
+                                                <a href="javascript:void();">.jpeg</a>
+                                                <span>allowed</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>User Role:</label>
+                                        <select id="selectedRole" name="role" class="selectpicker form-control"
+                                            data-style="py-0">
+                                            <option value="saleperson">Select</option>
+                                            <option value="admin">Admin</option>
+                                            <option value="saleperson">Sale person</option>
+                                        </select>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-9 col-lg-8">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between">
+                                <div class="header-title">
+                                    <h4 class="card-title">New User Information</h4>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="new-user-info">
+                                    <form id="form-add_user" enctype="multipart/form-data">
+                                        <div class="row">
+                                            <input type="file" name="profilePicture" id="avatar" accept="image/*"
+                                                hidden>
+                                            <input type="hidden" name="role" id="role">
+                                            <div class="form-group col-md-6">
+                                                <label for="fname">First Name:</label>
+                                                <input type="text" class="form-control" id="fname"
+                                                    placeholder="First Name" name="fname" required>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="lname">Last Name:</label>
+                                                <input type="text" class="form-control" id="lname"
+                                                    placeholder="Last Name" name="lname" required>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="email">Email:</label>
+                                                <input type="email" class="form-control" id="email" placeholder="Email"
+                                                    name="email" required>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="checkbox">
+                                            <label><input class="mr-2" type="checkbox">Enable
+                                                Two-Factor-Authentication</label>
+                                        </div>
+                                        <div id="liveAlertPlaceholder"></div>
+                                        <button type="submit" class="btn btn-primary" id="liveAlertBtn">Add New
+                                            User</button>
+                                    </form>
+
+                                    <script>
+                                        const alertPlaceholder = document.getElementById('liveAlertPlaceholder')
+                                        const appendAlert = (message, type) => {
+                                            const wrapper = document.createElement('div')
+                                            if (type == 'success') {
+                                                wrapper.innerHTML = [
+                                                    `<svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+                                                            <symbol id="info-fill" viewBox="0 0 16 16">
+                                                                <path
+                                                                    d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
+                                                            </symbol>
+                                                        </svg>
+                                                        <div class="alert alert-success d-flex align-items-center fade show" role="alert">
+                                                            <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Info:" width="15px" height="15px"><use xlink:href="#info-fill"/></svg>
+                                                            <div>
+                                                                ${message}
+                                                            </div>
+                                                        </div>`
+                                                ].join('')
+                                            }
+                                            else if (type == 'failed') {
+                                                wrapper.innerHTML = [
+                                                    `<svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+                                                            <symbol id="exclamation-triangle-fill" viewBox="0 0 16 16">
+                                                                <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                                                            </symbol>
+                                                        </svg>
+                                                        <div class="alert alert-danger d-flex align-items-center" role="alert">
+                                                            <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Danger:" width="15px" height="15px"><use xlink:href="#exclamation-triangle-fill"/></svg>
+                                                            <div>
+                                                                ${message}
+                                                            </div>
+                                                        </div>`
+                                                ].join('')
+                                            }
+                                            else {
+                                                alertPlaceholder.textContent = ''
+                                            }
+
+                                            alertPlaceholder.append(wrapper)
+                                        }
+
+                                        const alertTrigger = document.getElementById('liveAlertBtn')
+
+                                        $('#btnUpload').on('change', function (e) {
+                                            $('#profilePicture').attr('src', URL.createObjectURL(e.target.files[0]))
+                                        })
+
+                                        $('#form-add_user').on('submit', (e) => {
+                                            e.preventDefault()
+
+                                            $('#avatar').prop('files', $('#btnUpload').prop('files'))
+                                            if ($('#avatar').prop('files').length == 0) {
+                                                $('#image_error').text('Please choose a picture to set avatar')
+                                            }
+                                            else {
+                                                $('#image_error').text('')
+                                                $('#role').val($('#selectedRole').val())
+
+                                                var data = new FormData(e.target)
+
+                                                axios({ method: 'post', url: '/users/add', data })
+                                                    .then((res) => {
+                                                        if (alertTrigger) {
+                                                            appendAlert('', 'undefined')
+                                                            appendAlert(res.data.message, 'success')
+                                                        }
+                                                        setTimeout(() => {
+                                                            alertPlaceholder.textContent = ''
+                                                        }, 2000)
+                                                    })
+                                                    .catch(error => {
+                                                        if (alertTrigger) {
+                                                            appendAlert('', 'undefined')
+                                                            appendAlert(error.response.data.message, 'failed')
+                                                        }
+                                                    })
+                                            }
+                                        })
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Wrapper End-->
+    {{> footer }}
+
+</body>
+
+</html>

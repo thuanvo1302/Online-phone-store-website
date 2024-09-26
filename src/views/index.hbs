@@ -1,0 +1,696 @@
+<h1>Order List</h1>
+
+<ul>
+    {{#each orders}}
+    <li>
+        <h2>Order ID: {{_id}}</h2>
+        <p>Total amount: {{totalAmount}}</p>
+        <p>Date of purchase: {{dateOfPurchase}}</p>
+        <p>Order status: {{orderStatus}}</p>
+        <p>Amount given by customer: {{amountGivenByCustomer}}</p>
+        <p>Excess amount paid back: {{excessAmountPaidBack}}</p>
+        <p>Quantity: {{quantity}}</p>
+    </li>
+    {{/each}}
+</ul>
+
+<body class="">
+    <!-- loader Start -->
+    <div id="loading">
+        <div id="loading-center">
+        </div>
+    </div>
+    <!-- loader END -->
+    <!-- Wrapper Start -->
+    <div class="wrapper">
+        {{> sidebar}}
+        {{> navbar}}
+
+        <div class="modal fade" id="new-order" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="popup text-left">
+                            <h4 class="mb-3">New Order</h4>
+                            <div class="content create-workform bg-body">
+                                <div class="pb-3">
+                                    <label class="mb-2">Email</label>
+                                    <input type="text" class="form-control" placeholder="Enter Name or Email">
+                                </div>
+                                <div class="col-lg-12 mt-4">
+                                    <div class="d-flex flex-wrap align-items-ceter justify-content-center">
+                                        <div class="btn btn-primary mr-4" data-dismiss="modal">Cancel</div>
+                                        <div class="btn btn-outline-primary" data-dismiss="modal">Create</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content-page">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="card card-transparent card-block card-stretch card-height border-none">
+                            <div class="card-body p-0 mt-lg-2 mt-0">
+                                <h3 class="mb-3">Hi Graham, Good Morning</h3>
+                                <p class="mb-0 mr-4">Your dashboard gives you views of key performance or business
+                                    process.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-8">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4">
+                                <div class="card card-block card-stretch card-height">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-4 card-total-sale">
+                                            <div class="icon iq-icon-box-2 bg-info-light">
+                                                <img src="/images/product/1.png" class="img-fluid" alt="image">
+                                            </div>
+                                            <div>
+                                                <p class="mb-2">Total Sales</p>
+                                                <h4>31.50</h4>
+                                            </div>
+                                        </div>
+                                        <div class="iq-progress-bar mt-2">
+                                            <span class="bg-info iq-progress progress-1" data-percent="85">
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4">
+                                <div class="card card-block card-stretch card-height">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-4 card-total-sale">
+                                            <div class="icon iq-icon-box-2 bg-danger-light">
+                                                <img src="/images/product/2.png" class="img-fluid" alt="image">
+                                            </div>
+                                            <div>
+                                                <p class="mb-2">Total Cost</p>
+                                                <h4>$ 4598</h4>
+                                            </div>
+                                        </div>
+                                        <div class="iq-progress-bar mt-2">
+                                            <span class="bg-danger iq-progress progress-1" data-percent="70">
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4">
+                                <div class="card card-block card-stretch card-height">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-4 card-total-sale">
+                                            <div class="icon iq-icon-box-2 bg-success-light">
+                                                <img src="/images/product/3.png" class="img-fluid" alt="image">
+                                            </div>
+                                            <div>
+                                                <p class="mb-2">Product Sold</p>
+                                                <h4>4589 M</h4>
+                                            </div>
+                                        </div>
+                                        <div class="iq-progress-bar mt-2">
+                                            <span class="bg-success iq-progress progress-1" data-percent="75">
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="card card-block card-stretch card-height">
+                            <div class="card-header d-flex justify-content-between">
+                                <div class="header-title">
+                                    <h4 class="card-title">Overview</h4>
+                                </div>
+                                <div class="card-header-toolbar d-flex align-items-center">
+                                    <div class="dropdown">
+                                        <span class="dropdown-toggle dropdown-bg btn" id="dropdownMenuButton1"
+                                            data-toggle="dropdown">
+                                            This Month<i class="ri-arrow-down-s-line ml-1"></i>
+                                        </span>
+                                        <div class="dropdown-menu dropdown-menu-right shadow-none"
+                                            aria-labelledby="dropdownMenuButton1">
+                                            <a class="dropdown-item" href="#">Today</a>
+                                            <a class="dropdown-item" href="#">Yesterday</a>
+                                            <a class="dropdown-item" href="#">Within the last 7 days</a>
+                                            <a class="dropdown-item" href="#">This month</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div id="data-chart1"></div>
+                                <div id="layout1-chart-1"></div>
+                            </div>
+                            <script>
+                                const calculateNumberOfDays = (startDate, endDate) => {
+                                    // Convert the date strings to Date objects
+                                    const start = new Date(startDate);
+                                    const end = new Date(endDate);
+
+                                    // Calculate the time difference in milliseconds
+                                    const timeDifference = end - start;
+
+                                    // Calculate the number of days
+                                    const numberOfDays = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+
+                                    return numberOfDays;
+                                }
+
+                                const loadOrderList = (order, orderList) => {
+                                    orderList.append(
+                                        `<tr>
+                                            <td>
+                                                <div class="checkbox d-inline-block">
+                                                    <input type="checkbox" class="checkbox-input"
+                                                        id="checkbox2">
+                                                    <label for="checkbox2" class="mb-0"></label>
+                                                </div>
+                                            </td>
+                                            <td>${order._id}</td>
+                                            <td>${order.customerId.fullname}</td>
+                                            <td>${order.totalPrice}</td>
+                                            <td>${order.dateOfPurchase}</td>
+                                            <td>
+                                                <div class="badge badge-warning">${order.orderStatus}</div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center list-action">
+                                                    <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
+                                                        data-target="#view" data-order='${JSON.stringify(order)}'>
+                                                        <i class="ri-eye-line mr-0 mt-0"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>`
+                                    )
+                                }
+
+                                const buildChart1 = (typeTimePeriod, data_chart1, params) => {
+                                    if ($("#layout1-chart-1").length) {
+                                        $("#layout1-chart-1").html('')
+                                        var options = {
+                                            chart: {
+                                                height: 350, type: 'bar', events: {
+                                                    click: function (event, chartContext, config) {
+                                                        window.location = '/users/report'
+                                                    }
+
+                                                }
+                                            },
+                                            series: [{
+                                                name: 'Income',
+                                                type: 'column',
+                                                data: data_chart1.income
+                                            }, {
+                                                name: 'Number of orders',
+                                                type: 'column',
+                                                data: data_chart1.noOrder
+                                            }, {
+                                                name: 'Number of products',
+                                                type: 'column',
+                                                data: data_chart1.noPro
+                                            }],
+                                            dataLabels: {
+                                                enabled: false
+                                            },
+                                            xaxis: {
+                                                categories: data_chart1.date,
+                                                position: 'center'
+                                            },
+                                            yaxis: [
+                                                {
+                                                    axisTicks: {
+                                                        show: true,
+                                                    },
+                                                    axisBorder: {
+                                                        show: true,
+                                                        color: '#008FFB'
+                                                    },
+                                                    labels: {
+                                                        style: {
+                                                            colors: '#008FFB',
+                                                        },
+                                                        formatter: function (val) {
+                                                            return val.toLocaleString('en-US') + ' VND'
+                                                        }
+                                                    },
+                                                    title: {
+                                                        text: "Income from saling product",
+                                                        style: {
+                                                            color: '#008FFB',
+                                                        }
+                                                    },
+                                                    tooltip: {
+                                                        enabled: true
+                                                    }
+                                                },
+                                                {
+                                                    seriesName: 'No.Order',
+                                                    opposite: true,
+                                                    axisTicks: {
+                                                        show: true,
+                                                    },
+                                                    axisBorder: {
+                                                        show: true,
+                                                        color: '#00E396'
+                                                    },
+                                                    labels: {
+                                                        style: {
+                                                            colors: '#00E396',
+                                                        },
+                                                        formatter: function (val) {
+                                                            return Number(val).toFixed(1).replace(/\.0$/, '')
+                                                        }
+                                                    },
+                                                    title: {
+                                                        text: "Number of orders",
+                                                        style: {
+                                                            color: '#00E396',
+                                                        }
+                                                    },
+                                                },
+                                                {
+                                                    seriesName: 'No.Product',
+                                                    opposite: true,
+                                                    axisTicks: {
+                                                        show: true,
+                                                    },
+                                                    axisBorder: {
+                                                        show: true,
+                                                        color: '#FEB019'
+                                                    },
+                                                    labels: {
+                                                        style: {
+                                                            colors: '#FEB019',
+                                                        },
+                                                        formatter: function (val) {
+                                                            return Number(val).toFixed(1).replace(/\.0$/, '')
+                                                        }
+                                                    },
+                                                    title: {
+                                                        text: "Number of products",
+                                                        style: {
+                                                            color: '#FEB019',
+                                                        }
+                                                    }
+                                                },
+                                            ],
+                                            tooltip: {
+                                                fixed: {
+                                                    enabled: true,
+                                                    position: 'topLeft', // topRight, topLeft, bottomRight, bottomLeft
+                                                    offsetY: 30,
+                                                    offsetX: 60
+                                                },
+                                            },
+                                            legend: {
+                                                horizontalAlign: 'left',
+                                                offsetX: 40
+                                            }
+                                        };
+
+                                        var chart = new ApexCharts(document.querySelector("#layout1-chart-1"), options);
+                                        chart.render();
+                                    }
+                                }
+
+                                const formatISODateToYYYYMMDD = (isoDateString) => {
+                                    // Create a Date object from the ISO date string
+                                    const originalDate = new Date(isoDateString);
+
+                                    // Extract components and format the date to "yyyy-MM-dd"
+                                    const year = originalDate.getFullYear();
+                                    const month = String(originalDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+                                    const day = String(originalDate.getDate()).padStart(2, '0');
+
+                                    const formattedDate = `${year}-${month}-${day}`;
+
+                                    return formattedDate;
+                                }
+
+                                const getOrderByTypeTimePeriod = (params) => {
+                                    axios({
+                                        method: 'get',
+                                        params,
+                                        url: `/orders/time`,
+                                    })
+                                        .then(res => {
+                                            var startDate = formatISODateToYYYYMMDD(res.data.startDate)
+                                            var endDate = formatISODateToYYYYMMDD(res.data.endDate)
+                                            $('#start_date').val(startDate)
+                                            $('#end_date').val(endDate)
+
+                                            var chart1 = $('#data-chart1')
+                                            var orderList = $('#order-list')
+                                            chart1.html('')
+                                            orderList.html('')
+                                            res.data.orders.map(order => {
+                                                chart1.append(`<div class="data-chart1" data-id=${order._id} data-total=${order.totalPrice}
+                                                                    data-date=${order.dateOfPurchase} data-noPro=${order.noPro}></div>`)
+
+                                                loadOrderList(order, orderList)
+                                            })
+
+                                            const handleChooseTimePeriod = (date, typeTimePeriod) => {
+                                                if (typeTimePeriod === 'Today' || typeTimePeriod === 'Yesterday') {
+                                                    // Format time for 'Today'
+                                                    return date
+                                                } else if (typeTimePeriod === 'Within the last 7 days' || typeTimePeriod === 'This month' || typeTimePeriod === 'From-To') {
+                                                    if (params.startDate && params.endDate) {
+                                                        if (calculateNumberOfDays(params.startDate, params.endDate) > 45) {
+                                                            return (1900 + date.getYear()) + "-" + (date.getMonth() + 1);
+                                                        }
+                                                        return (1900 + date.getYear()) + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+                                                    }
+                                                    // Format date for 'Week' or 'Month'
+                                                    return (1900 + date.getYear()) + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+                                                } else if (typeTimePeriod === 'This year') {
+                                                    // Format month for 'Year'
+                                                    return (1900 + date.getYear()) + "-" + (date.getMonth() + 1);
+                                                }
+                                            }
+
+                                            var data_chart1 = {
+                                                income: [],
+                                                noOrder: [],
+                                                noPro: [],
+                                                date: []
+                                            }
+                                            $('.data-chart1').each((index, element) => {
+                                                var date = new Date($(element).data('date'));
+                                                var xValue = handleChooseTimePeriod(date, params.typeTimePeriod);
+                                                var income = $(element).data('total');
+                                                var noPro = $(element).data('nopro');
+
+                                                // Check if an entry with the same x value already exists
+                                                var existingEntryIndex = data_chart1.date.findIndex(entry => entry === xValue);
+
+                                                if (existingEntryIndex !== -1) {
+                                                    // If it exists, update the existing entry by adding the y values
+                                                    data_chart1.income[existingEntryIndex] += income;
+                                                    data_chart1.noOrder[existingEntryIndex] += 1
+                                                    data_chart1.noPro[existingEntryIndex] += noPro
+                                                } else {
+                                                    // If it doesn't exist, create a new entry in the array
+                                                    data_chart1.income.push(income)
+                                                    data_chart1.noOrder.push(1)
+                                                    data_chart1.noPro.push(noPro)
+                                                    data_chart1.date.push(xValue)
+                                                }
+                                            })
+
+                                            buildChart1(params.typeTimePeriod, data_chart1, params)
+                                        })
+                                        .catch(error => console.log(error))
+                                }
+
+                                document.addEventListener("DOMContentLoaded", () => {
+                                    var params = {
+                                        time: new Date(),
+                                        typeTimePeriod: 'Within the last 7 days'
+                                    }
+                                    getOrderByTypeTimePeriod(params)
+
+                                    var typeTimePeriod = 'Today'
+                                    $('.dropdown-item').on('click', function () {
+                                        // Get the text content of the clicked item
+                                        var selectedItem = $(this).text();
+
+                                        $('#dropdownMenuButton1').text(selectedItem)
+
+                                        typeTimePeriod = selectedItem
+                                        var params = {
+                                            time: new Date(),
+                                            typeTimePeriod
+                                        }
+                                        getOrderByTypeTimePeriod(params)
+                                    })
+
+                                    $('#btn-search').on('click', (e) => {
+                                        var startDate = $('#start_date').val()
+                                        var endDate = $('#end_date').val()
+
+                                        console.log("The number of date: " + calculateNumberOfDays(startDate, endDate))
+
+                                        getOrderByTypeTimePeriod({ startDate, endDate, typeTimePeriod: 'From-To' })
+                                    })
+
+                                });
+
+                            </script>
+                        </div>
+                    </div>
+                    <div class="col-lg-8">
+                        <div class="card card-block card-stretch card-height">
+                            <div class="card-header d-flex align-items-center justify-content-between">
+                                <div class="header-title">
+                                    <h4 class="card-title">Top Products</h4>
+                                </div>
+                                <div class="card-header-toolbar d-flex align-items-center">
+                                    <div class="dropdown">
+                                        <span class="dropdown-toggle dropdown-bg btn" id="dropdownMenuButton006"
+                                            data-toggle="dropdown">
+                                            This Month<i class="ri-arrow-down-s-line ml-1"></i>
+                                        </span>
+                                        <div class="dropdown-menu dropdown-menu-right shadow-none"
+                                            aria-labelledby="dropdownMenuButton006">
+                                            <a class="dropdown-item" href="#">Year</a>
+                                            <a class="dropdown-item" href="#">Month</a>
+                                            <a class="dropdown-item" href="#">Week</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled row top-product mb-0">
+                                    <li class="col-lg-3">
+                                        <div class="card card-block card-stretch card-height mb-0">
+                                            <div class="card-body">
+                                                <div class="bg-warning-light rounded">
+                                                    <img src="/images/product/01.png"
+                                                        class="style-img img-fluid m-auto p-3" alt="image">
+                                                </div>
+                                                <div class="style-text text-left mt-3">
+                                                    <h5 class="mb-1">Organic Cream</h5>
+                                                    <p class="mb-0">789 Item</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="col-lg-3">
+                                        <div class="card card-block card-stretch card-height mb-0">
+                                            <div class="card-body">
+                                                <div class="bg-danger-light rounded">
+                                                    <img src="/images/product/02.png"
+                                                        class="style-img img-fluid m-auto p-3" alt="image">
+                                                </div>
+                                                <div class="style-text text-left mt-3">
+                                                    <h5 class="mb-1">Rain Umbrella</h5>
+                                                    <p class="mb-0">657 Item</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="col-lg-3">
+                                        <div class="card card-block card-stretch card-height mb-0">
+                                            <div class="card-body">
+                                                <div class="bg-info-light rounded">
+                                                    <img src="/images/product/03.png"
+                                                        class="style-img img-fluid m-auto p-3" alt="image">
+                                                </div>
+                                                <div class="style-text text-left mt-3">
+                                                    <h5 class="mb-1">Serum Bottle</h5>
+                                                    <p class="mb-0">489 Item</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="col-lg-3">
+                                        <div class="card card-block card-stretch card-height mb-0">
+                                            <div class="card-body">
+                                                <div class="bg-success-light rounded">
+                                                    <img src="/images/product/02.png"
+                                                        class="style-img img-fluid m-auto p-3" alt="image">
+                                                </div>
+                                                <div class="style-text text-left mt-3">
+                                                    <h5 class="mb-1">Organic Cream</h5>
+                                                    <p class="mb-0">468 Item</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card card-transparent card-block card-stretch mb-4">
+                            <div class="card-header d-flex align-items-center justify-content-between p-0">
+                                <div class="header-title">
+                                    <h4 class="card-title mb-0">Best Item All Time</h4>
+                                </div>
+                                <div class="card-header-toolbar d-flex align-items-center">
+                                    <div><a href="#" class="btn btn-primary view-btn font-size-14">View All</a></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card card-block card-stretch card-height-helf">
+                            <div class="card-body card-item-right">
+                                <div class="d-flex align-items-top">
+                                    <div class="bg-warning-light rounded">
+                                        <img src="/images/product/04.png" class="style-img img-fluid m-auto"
+                                            alt="image">
+                                    </div>
+                                    <div class="style-text text-left">
+                                        <h5 class="mb-2">Coffee Beans Packet</h5>
+                                        <p class="mb-2">Total Sell : 45897</p>
+                                        <p class="mb-0">Total Earned : $45,89 M</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card card-block card-stretch card-height-helf">
+                            <div class="card-body card-item-right">
+                                <div class="d-flex align-items-top">
+                                    <div class="bg-danger-light rounded">
+                                        <img src="/images/product/05.png" class="style-img img-fluid m-auto"
+                                            alt="image">
+                                    </div>
+                                    <div class="style-text text-left">
+                                        <h5 class="mb-2">Bottle Cup Set</h5>
+                                        <p class="mb-2">Total Sell : 44359</p>
+                                        <p class="mb-0">Total Earned : $45,50 M</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card card-block card-stretch card-height-helf">
+                            <div class="card-body">
+                                <div class="d-flex align-items-top justify-content-between">
+                                    <div class="">
+                                        <p class="mb-0">Income</p>
+                                        <h5>$ 98,7800 K</h5>
+                                    </div>
+                                    <div class="card-header-toolbar d-flex align-items-center">
+                                        <div class="dropdown">
+                                            <span class="dropdown-toggle dropdown-bg btn" id="dropdownMenuButton003"
+                                                data-toggle="dropdown">
+                                                This Month<i class="ri-arrow-down-s-line ml-1"></i>
+                                            </span>
+                                            <div class="dropdown-menu dropdown-menu-right shadow-none"
+                                                aria-labelledby="dropdownMenuButton003">
+                                                <a class="dropdown-item" href="#">Year</a>
+                                                <a class="dropdown-item" href="#">Month</a>
+                                                <a class="dropdown-item" href="#">Week</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="layout1-chart-3" class="layout-chart-1"></div>
+                            </div>
+                        </div>
+                        <div class="card card-block card-stretch card-height-helf">
+                            <div class="card-body">
+                                <div class="d-flex align-items-top justify-content-between">
+                                    <div class="">
+                                        <p class="mb-0">Expenses</p>
+                                        <h5>$ 45,8956 K</h5>
+                                    </div>
+                                    <div class="card-header-toolbar d-flex align-items-center">
+                                        <div class="dropdown">
+                                            <span class="dropdown-toggle dropdown-bg btn" id="dropdownMenuButton004"
+                                                data-toggle="dropdown">
+                                                This Month<i class="ri-arrow-down-s-line ml-1"></i>
+                                            </span>
+                                            <div class="dropdown-menu dropdown-menu-right shadow-none"
+                                                aria-labelledby="dropdownMenuButton004">
+                                                <a class="dropdown-item" href="#">Year</a>
+                                                <a class="dropdown-item" href="#">Month</a>
+                                                <a class="dropdown-item" href="#">Week</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="layout1-chart-4" class="layout-chart-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-8">
+                        <div class="card card-block card-stretch card-height">
+                            <div class="card-header d-flex justify-content-between">
+                                <div class="header-title">
+                                    <h4 class="card-title">Order Summary</h4>
+                                </div>
+                                <div class="card-header-toolbar d-flex align-items-center">
+                                    <div class="dropdown">
+                                        <span class="dropdown-toggle dropdown-bg btn" id="dropdownMenuButton005"
+                                            data-toggle="dropdown">
+                                            This Month<i class="ri-arrow-down-s-line ml-1"></i>
+                                        </span>
+                                        <div class="dropdown-menu dropdown-menu-right shadow-none"
+                                            aria-labelledby="dropdownMenuButton005">
+                                            <a class="dropdown-item" href="#">Year</a>
+                                            <a class="dropdown-item" href="#">Month</a>
+                                            <a class="dropdown-item" href="#">Week</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex flex-wrap align-items-center mt-2">
+                                    <div class="d-flex align-items-center progress-order-left">
+                                        <div class="progress progress-round m-0 orange conversation-bar"
+                                            data-percent="46">
+                                            <span class="progress-left">
+                                                <span class="progress-bar"></span>
+                                            </span>
+                                            <span class="progress-right">
+                                                <span class="progress-bar"></span>
+                                            </span>
+                                            <div class="progress-value text-secondary">46%</div>
+                                        </div>
+                                        <div class="progress-value ml-3 pr-5 border-right">
+                                            <h5>$12,6598</h5>
+                                            <p class="mb-0">Average Orders</p>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center ml-5 progress-order-right">
+                                        <div class="progress progress-round m-0 primary conversation-bar"
+                                            data-percent="46">
+                                            <span class="progress-left">
+                                                <span class="progress-bar"></span>
+                                            </span>
+                                            <span class="progress-right">
+                                                <span class="progress-bar"></span>
+                                            </span>
+                                            <div class="progress-value text-primary">46%</div>
+                                        </div>
+                                        <div class="progress-value ml-3">
+                                            <h5>$59,8478</h5>
+                                            <p class="mb-0">Top Orders</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body pt-0">
+                                <div id="layout1-chart-5"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Page end  -->
+            </div>
+        </div>
+    </div>
+    <!-- Wrapper End-->
+    {{> footer}}
+</body>

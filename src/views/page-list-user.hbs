@@ -1,0 +1,299 @@
+<!-- loader Start -->
+<div id="loading">
+    <div id="loading-center">
+    </div>
+</div>
+<!-- loader END -->
+<!-- Wrapper Start -->
+<div class="wrapper">
+    {{> sidebar}}
+    {{> navbar}}
+
+    <div class="modal fade" id="new-order" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="popup text-left">
+                        <h4 class="mb-3">New Order</h4>
+                        <div class="content create-workform bg-body">
+                            <div class="pb-3">
+                                <label class="mb-2">Email</label>
+                                <input type="text" class="form-control" placeholder="Enter Name or Email">
+                            </div>
+                            <div class="col-lg-12 mt-4">
+                                <div class="d-flex flex-wrap align-items-ceter justify-content-center">
+                                    <div class="btn btn-primary mr-4" data-dismiss="modal">Cancel</div>
+                                    <div class="btn btn-outline-primary" data-dismiss="modal">Create</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="content-page">
+        <div class="container-fluid">
+            <div class="row">
+                <div id="liveAlertPlaceholder"></div>
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between">
+                            <div class="header-title">
+                                <h4 class="card-title">User List</h4>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <div class="row justify-content-between">
+                                    <div class="col-sm-6 col-md-6">
+                                        <div id="user_list_datatable_info" class="dataTables_filter">
+                                            <form class="mr-3 position-relative">
+                                                <div class="form-group mb-0">
+                                                    <input type="search" class="form-control" id="exampleInputSearch"
+                                                        placeholder="Search" aria-controls="user-list-table">
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-6">
+                                        <div class="user-list-files d-flex">
+                                            <a class="bg-primary" href="javascript:void();">
+                                                Print
+                                            </a>
+                                            <a class="bg-primary" href="javascript:void();">
+                                                Excel
+                                            </a>
+                                            <a class="bg-primary" href="javascript:void();">
+                                                Pdf
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <table id="user-list-table" class="table table-striped dataTable mt-4" role="grid"
+                                    aria-describedby="user-list-page-info">
+                                    <thead>
+                                        <tr class="ligth">
+                                            <th>Profile</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Status</th>
+                                            <th>Locked</th>
+                                            <th>Verify</th>
+
+                                            <th style="min-width: 100px">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {{#each users}}
+                                        <tr>
+                                            <td class="text-center"><img class="rounded img-fluid avatar-40"
+                                                    src="/images/user/{{profilePicture}}" alt="profile">
+                                            </td>
+
+                                            <td>{{username}}</td>
+                                            <td>{{email}}</td>
+                                            <td><button onclick="" class="badge bg-primary">
+                                                    {{#if inactivateStatus}}
+                                                    Active
+                                                    {{else}}
+                                                    Inactive
+                                                    {{/if}}
+
+
+                                                </button>
+                                            </td>
+                                            <td><button onclick="blockUnblock(this, '{{email}}')"
+                                                    class="badge bg-primary" id="block">
+                                                    {{#if lockedStatus}}
+                                                    Locked
+                                                    {{else}}
+                                                    Unlocked
+                                                    {{/if}}
+
+
+                                                </button>
+                                            </td>
+                                            <td><button onclick="resendEmail(this,  '{{email}}', '{{password}}')"
+                                                    class="badge bg-primary" id="liveAlertBtn">
+                                                    {{#if isVerified}}
+                                                    Verify
+                                                    {{else}}
+                                                    Re-Verify
+                                                    {{/if}}
+                                                </button></td>
+
+
+                                            <td>
+                                                <div class="flex align-items-center list-user-action">
+                                                    {{!-- <a class="btn btn-sm bg-primary" data-toggle="tooltip"
+                                                        data-placement="top" title="" data-original-title="Add"
+                                                        href="#"><i class="ri-user-add-line mr-0"></i></a> --}}
+                                                    <a class="btn btn-sm bg-primary" data-toggle="tooltip"
+                                                        data-placement="top" title="" data-original-title="Edit"
+                                                        href="/users/edit/{{_id}}"><i
+                                                            class="ri-pencil-line mr-0"></i></a>
+                                                    {{!-- <a class="btn btn-sm bg-primary" data-toggle="tooltip"
+                                                        data-placement="top" title="" data-original-title="Delete"
+                                                        href="#"><i class="ri-delete-bin-line mr-0"></i></a> --}}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {{/each}}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row justify-content-between mt-3">
+                                <div id="user-list-page-info" class="col-md-6">
+                                    <span>Showing 1 to 5 of 5 entries</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <nav aria-label="Page navigation example">
+                                        <ul class="pagination justify-content-end mb-0">
+                                            <li class="page-item disabled">
+                                                <a class="page-link" href="#" tabindex="-1"
+                                                    aria-disabled="true">Previous</a>
+                                            </li>
+                                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                            <li class="page-item">
+                                                <a class="page-link" href="#">Next</a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Wrapper End-->
+{{> footer }}
+
+<script>
+    const alertPlaceholder = document.getElementById('liveAlertPlaceholder')
+    const appendAlert = (message, type) => {
+
+        const wrapper = document.createElement('div')
+        if (type == 'success') {
+            wrapper.innerHTML = [
+                `<svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+                                                            <symbol id="info-fill" viewBox="0 0 16 16">
+                                                                <path
+                                                                    d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
+                                                            </symbol>
+                                                        </svg>
+                                                        <div class="alert alert-success d-flex align-items-center fade show" role="alert">
+                                                            <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Info:" width="15px" height="15px"><use xlink:href="#info-fill"/></svg>
+                                                            <div>
+                                                                ${message}
+                                                            </div>
+                                                        </div>`
+            ].join('')
+        }
+        else if (type == 'failed') {
+            wrapper.innerHTML = [
+                `<svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+                                                            <symbol id="exclamation-triangle-fill" viewBox="0 0 16 16">
+                                                                <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                                                            </symbol>
+                                                        </svg>
+                                                        <div class="alert alert-danger d-flex align-items-center" role="alert">
+                                                            <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Danger:" width="15px" height="15px"><use xlink:href="#exclamation-triangle-fill"/></svg>
+                                                            <div>
+                                                                ${message}
+                                                            </div>
+                                                        </div>`
+            ].join('')
+        }
+        else {
+            alertPlaceholder.textContent = ''
+        }
+
+        alertPlaceholder.append(wrapper)
+    }
+    const alertTrigger = document.getElementById('liveAlertBtn')
+
+    function resendEmail(button, email, password) {
+        const postData = {
+            email: email,
+            password: password
+        };
+        const buttonText = button.innerText.trim();
+
+        if (buttonText === 'Re-Verify') {
+            fetch(`/users/resend`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(postData),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (alertTrigger) {
+                        appendAlert('', 'undefined')
+                        appendAlert(data.message, 'success')
+                    }
+                    setTimeout(() => {
+                        alertPlaceholder.textContent = ''
+                    }, 2000)
+                })
+                .catch(error => {
+
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+        } else {
+            appendAlert('', 'undefined')
+            appendAlert('This account has been verify', 'failed')
+
+        }
+
+
+
+
+    }
+    async function blockUnblock(button, email) {
+        const response = await fetch(`/users/updateLockedStatus/${email}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+
+            if (!data.lockedStatus) {
+                button.innerHTML = 'Unlocked';
+                button.classList.remove('btn-danger');
+                button.classList.add('btn-success');
+                appendAlert('', 'undefined')
+                appendAlert('This account has unlocked', 'success')
+                setTimeout(() => {
+                    alertPlaceholder.textContent = ''
+                }, 2000)
+            } else {
+                button.innerHTML = 'Locked';
+                button.classList.remove('btn-success');
+                button.classList.add('btn-danger');
+                appendAlert('', 'undefined')
+                appendAlert('This account locked', 'failed')
+                setTimeout(() => {
+                    alertPlaceholder.textContent = ''
+                }, 2000)
+            }
+        } else {
+            console.error('Failed to update lockedStatus');
+        }
+    }
+</script>

@@ -1,0 +1,269 @@
+<!-- loader Start -->
+<div id="loading">
+    <div id="loading-center">
+    </div>
+</div>
+<!-- loader END -->
+<!-- Wrapper Start -->
+<div class="wrapper">
+    {{> sidebar}}
+    {{> navbar }}
+
+    <img id="barcode" />
+    JsBarcode("#barcode", "Hi!");
+
+    <div class="content-page">
+        <div class="container-fluid">
+            <div class="row">
+
+                <div class="col-lg-12">
+                    <div class="d-flex flex-wrap flex-wrap align-items-center justify-content-between mb-4">
+                        <div>
+                            <h4 class="mb-3">Product List</h4>
+                        </div>
+                        <a href="/products/add" class="btn btn-primary add-list" id="btnAddProduct"><i
+                                class="las la-plus mr-3"></i>Add the
+                            product</a>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="alert alert-danger d-none" role="alert">
+                        <div class="iq-alert-icon">
+                            <i class="ri-information-line"></i>
+                        </div>
+                        <div class="iq-alert-text"><b id="msg">Error</b></div>
+                    </div>
+                </div>
+
+                <div class="col-lg-12">
+                    <div class="table-responsive rounded mb-3">
+                        {{!-- data-tables --}}
+                        <table class=" table mb-0 tbl-server-info">
+                            <thead class="bg-white text-uppercase">
+                                <tr class="ligth ligth-data">
+                                    <th>
+                                        <div class="checkbox d-inline-block">
+                                            <input type="checkbox" class="checkbox-input" id="checkbox1">
+                                            <label for="checkbox1" class="mb-0"></label>
+                                        </div>
+                                    </th>
+                                    <th>Name</th>
+                                    <th>Barcode</th>
+                                    <th>Category</th>
+                                    <th>Import price</th>
+                                    <th>Retail price</th>
+                                    <th>Handle</th>
+                                </tr>
+                            </thead>
+                            <tbody class="ligth-body" id="products"></tbody>
+                            <tfoot class="bg-white text-uppercase">
+                                <tr class="ligth ligth-data">
+                                    <th>
+                                        <div class="checkbox d-inline-block">
+                                            <input type="checkbox" class="checkbox-input" id="checkbox1">
+                                            <label for="checkbox1" class="mb-0"></label>
+                                        </div>
+                                    </th>
+                                    <th>Name</th>
+                                    <th>Barcode</th>
+                                    <th>Category</th>
+                                    <th>Import price</th>
+                                    <th>Retail price</th>
+                                    <th>Handle</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- Page end  -->
+        </div>
+        <!-- Modal Edit -->
+        <div class="modal fade" id="edit-note" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="popup text-left">
+                            <div class="media align-items-top justify-content-between">
+                                <h3 class="mb-3">Product</h3>
+                                <div class="btn-cancel p-0" data-dismiss="modal"><i class="las la-times"></i></div>
+                            </div>
+                            <div class="content edit-notes">
+                                <div class="card card-transparent card-block card-stretch event-note mb-0">
+                                    <div class="card-body px-0 bukmark">
+                                        <div
+                                            class="d-flex align-items-center justify-content-between pb-2 mb-3 border-bottom">
+                                            <div class="quill-tool">
+                                            </div>
+                                        </div>
+                                        <div id="quill-toolbar1">
+                                            <p>Virtual Digital Marketing Course every week on Monday, Wednesday and
+                                                Saturday.Virtual Digital Marketing Course every week on Monday</p>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer border-0" id="abc">
+                                        <div class="d-flex flex-wrap align-items-ceter justify-content-end">
+                                            <div class="btn btn-primary mr-3" data-dismiss="modal">Cancel</div>
+                                            <div class="btn btn-outline-primary" data-dismiss="modal">Save</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal delete -->
+<div class="modal fade" id="delete-product" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="popup text-left">
+                    <h4 class="mb-3">Delete</h4>
+                    <div class="content create-workform bg-body">
+                        <div class="modal-body pb-3">
+                            Are you sure want to delete product : <strong id="nameProductModal"></strong>
+                        </div>
+                        <div class="col-lg-12 mt-4">
+                            <div class="d-flex flex-wrap align-items-ceter justify-content-center">
+                                <div class="btn btn-primary mr-4" data-dismiss="modal">Cancel</div>
+                                <div class="btn btn-outline-primary btn-confirm-delete" data-dismiss="modal">Delete
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<img id="barcode" />
+
+<!-- Wrapper End-->
+{{> footer}}
+<script>
+    $(document).ready(async function () {
+
+        let userRole;
+        // check current role 
+        await axios.get('/api/auth/user')
+            .then(res => {
+                if (res.status === 200) {
+                    const data = res.data.data;
+                    userRole = data.role
+                }
+            })
+            .catch(err => { console.log(err) })
+
+        if (userRole === "saleperson") {
+            $(`#btnAddProduct`).hide();
+        }
+
+        let productsTable = $('#products')
+        const alertError = document.querySelector('.alert')
+
+        axios({
+            method: 'get',
+            url: `/api/products`,
+        })
+            .then(res => {
+                if (res.status === 200 && res.data.code === 1) {
+                    const products = res.data.data
+                    console.log("🚀 ~ file: page-list-product.hbs:190 ~ products:", products)
+
+                    products.forEach(product => {
+                        displayProduct(product)
+                    })
+                }
+            })
+            .catch(err => console.log(err))
+
+        function displayProduct(product) {
+            console.log("🚀 ~ file: page-list-product.hbs:168 ~ displayProduct ~ product:", product)
+            let image = `/images/product/${product.images}`;
+            let item = $(`<tr id="${product._id}">
+                                    <td>
+                                        <div class="checkbox d-inline-block">
+                                            <input type="checkbox" class="checkbox-input" id="checkbox3">
+                                            <label for="checkbox3" class="mb-0"></label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="${image}" class="img-fluid rounded avatar-50 mr-3"
+                                                alt="image">
+                                            <div>
+                                                ${product.productName}
+                                                
+                                                {{!-- <p class="mb-0"><small>This is test Product</small></p> --}}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <img src="${product.barcode}" class="img-fluid rounded avatar-100 mr-3"
+                                                alt="image">
+                                    </td>
+                                    <td>${product.category.name}</td>
+                                    <td>${product.importPrice}</td>
+                                    <td>${product.retailPrice}</td>
+                                    <td>
+                                        <div class="d-flex align-items-center list-action">
+                                                <a class="badge badge-info mr-2" data-toggle="tooltip" data-placement="top"
+                                                    title="" data-original-title="View" href="#"><i
+                                                        class="ri-eye-line mr-0"></i></a>
+                                            <a class="badge bg-success mr-2 btn-edit" data-toggle="tooltip" data-placement="top"
+                                                title="" data-original-title="Edit" href="/products/edit?id=${product._id} "><i
+                                                    class="ri-pencil-line mr-0"></i></a>
+                                            <a class="badge bg-warning mr-2 btn-delete" data-toggle="modal"
+                                                data-placement="top" title="" data-original-title="Delete" href=""
+                                                data-target="#delete-product" data-name="${product.productName}"
+                                                data-id="${product._id}">
+                                                <i class="ri-delete-bin-line mr-0"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr >`)
+
+            productsTable.append(item)
+            if (userRole === 'saleperson') {
+                item.find('.btn-delete').hide();
+                item.find('.btn-edit').hide();
+            }
+
+            $('.btn-delete').on('click', e => {
+                e.preventDefault();
+                let target = e.currentTarget
+                console.log(target)
+                let productName = $(target).data('name');
+                let productId = $(target).data('id');
+                $('#nameProductModal').html(`${productName}`);
+                $('.btn-confirm-delete').attr('id', productId);
+            })
+
+            $('.btn-confirm-delete').click(e => {
+                let id = e.target.id;
+                fetch(`/api/products/${id}`, {
+                    method: 'DELETE'
+                })
+                    .then(response => {
+                        if (response.status === 200) {
+                            alertError.classList.remove('d-none');
+                            $(`tr#${id}`).remove();
+                        }
+                        return response.json();
+                    })
+                    .then(json => {
+                        document.getElementById('msg').textContent = json.message
+                    })
+                    .catch(err => console.log(err))
+            })
+
+        }
+    })
+</script>

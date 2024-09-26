@@ -1,0 +1,610 @@
+<body class="">
+    <!-- loader Start -->
+    <div id="loading">
+        <div id="loading-center">
+        </div>
+    </div>
+    <!-- loader END -->
+    <!-- Wrapper Start -->
+    <div class="wrapper">
+        {{> sidebar}}
+        {{> navbar}}
+        <div class="modal fade" id="new-order" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="popup text-left">
+                            <h4 class="mb-3">New Order</h4>
+                            <div class="content create-workform bg-body">
+                                <div class="pb-3">
+                                    <label class="mb-2">Email</label>
+                                    <input type="text" class="form-control" placeholder="Enter Name or Email">
+                                </div>
+                                <div class="col-lg-12 mt-4">
+                                    <div class="d-flex flex-wrap align-items-ceter justify-content-center">
+                                        <div class="btn btn-primary mr-4" data-dismiss="modal">Cancel</div>
+                                        <div class="btn btn-outline-primary" data-dismiss="modal">Create</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content-page">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card card-block card-stretch card-height">
+                            <div class="card-header d-flex justify-content-between">
+                                <div class="header-title">
+                                    <h4 class="card-title">Overview</h4>
+                                </div>
+                                <div class="card-header-toolbar d-flex align-items-center">
+                                    <div class="dropdown">
+                                        <span class="dropdown-toggle dropdown-bg btn" id="dropdownMenuButton1"
+                                            data-toggle="dropdown">Choose time period<i
+                                                class="ri-arrow-down-s-line ml-1"></i>
+                                        </span>
+                                        <div class="dropdown-menu dropdown-menu-right shadow-none"
+                                            aria-labelledby="dropdownMenuButton1">
+                                            <a class="dropdown-item" href="#">Today</a>
+                                            <a class="dropdown-item" href="#">Yesterday</a>
+                                            <a class="dropdown-item" href="#">Within the last 7 days</a>
+                                            <a class="dropdown-item" href="#">This month</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-around align-items-end">
+                                <span>
+                                    <label for="start_date">From</label>
+                                    <input class="form-control" type="date" name="start_date" id="start_date"
+                                        value="2023-01-01">
+                                </span>
+                                <span>
+                                    <label for="end_date">To</label>
+                                    <input class="form-control" type="date" name="and_date" id="end_date"
+                                        value="2023-12-31">
+                                </span>
+                                <div class="">
+                                    <button class="btn btn-primary" type="submit" id="btn-search">Search</button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div id="data-chart1"></div>
+                                <div id="layout1-chart-1"></div>
+                                <script>
+                                    const calculateNumberOfDays = (startDate, endDate) => {
+                                        // Convert the date strings to Date objects
+                                        const start = new Date(startDate);
+                                        const end = new Date(endDate);
+
+                                        // Calculate the time difference in milliseconds
+                                        const timeDifference = end - start;
+
+                                        // Calculate the number of days
+                                        const numberOfDays = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+
+                                        return numberOfDays;
+                                    }
+
+                                    const loadOrderList = (order, orderList) => {
+                                        orderList.append(
+                                            `<tr>
+                                                <td>
+                                                    <div class="checkbox d-inline-block">
+                                                        <input type="checkbox" class="checkbox-input"
+                                                            id="checkbox2">
+                                                        <label for="checkbox2" class="mb-0"></label>
+                                                    </div>
+                                                </td>
+                                                <td>${order._id}</td>
+                                                <td>${order.customerId.fullname}</td>
+                                                <td>${order.totalPrice}</td>
+                                                <td>${order.dateOfPurchase}</td>
+                                                <td>
+                                                    <div class="badge badge-warning">${order.payment.paymentStatus}</div>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex align-items-center list-action">
+                                                        <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
+                                                            data-target="#view" data-order='${JSON.stringify(order)}'>
+                                                            <i class="ri-eye-line mr-0 mt-0"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>`
+                                        )
+                                    }
+
+                                    const buildChart1 = (typeTimePeriod, data_chart1, params) => {
+                                        if ($("#layout1-chart-1").length) {
+                                            $("#layout1-chart-1").html('')
+                                            var options = {
+                                                chart: {
+                                                    height: 350,
+                                                    type: 'bar',
+                                                    events: {
+                                                        click: function (event, chartContext, config) {
+                                                            var typeTimeChart = null
+                                                            if (params.typeTimePeriod === 'Today' || params.typeTimePeriod === 'Yesterday') {
+                                                                // Format time for 'Today'
+                                                                typeTimeChart = 'Hour'
+                                                            } else if (params.typeTimePeriod === 'Within the last 7 days' || params.typeTimePeriod === 'This month' || params.typeTimePeriod === 'From-To') {
+                                                                if (params.startDate && params.endDate) {
+                                                                    if (calculateNumberOfDays(params.startDate, params.endDate) > 45) {
+                                                                        // Format month for 'Year'
+                                                                        typeTimeChart = 'This month'
+                                                                    }
+                                                                    else {
+                                                                        // Format date for 'Week' or 'Month'
+                                                                        typeTimeChart = 'Date'
+                                                                    }
+                                                                }
+                                                                else {
+                                                                    // Format date for 'Week' or 'Month'
+                                                                    typeTimeChart = 'Date'
+                                                                }
+                                                            }
+                                                            var subParams = {
+                                                                time: '2023-10-23',
+                                                                typeTimePeriod: typeTimeChart
+                                                            }
+
+                                                            if (config.dataPointIndex === -1) {
+                                                                subParams.time = config.config.xaxis.categories[0]
+                                                            } else {
+                                                                subParams.time = config.config.xaxis.categories[config.dataPointIndex]
+                                                            }
+                                                            axios({
+                                                                method: 'get',
+                                                                params: subParams,
+                                                                url: `/orders/time`,
+                                                            })
+                                                                .then(res => {
+                                                                    var orderList = $('#order-list')
+                                                                    orderList.html('')
+                                                                    res.data.orders.map(order => {
+                                                                        loadOrderList(order, orderList)
+                                                                    })
+                                                                })
+                                                                .catch(err => {
+                                                                    console.error(err)
+                                                                })
+                                                        }
+                                                    }
+
+                                                },
+                                                series: [{
+                                                    name: 'Income',
+                                                    type: 'column',
+                                                    data: data_chart1.income
+                                                }, {
+                                                    name: 'Number of orders',
+                                                    type: 'column',
+                                                    data: data_chart1.noOrder
+                                                }, {
+                                                    name: 'Number of products',
+                                                    type: 'column',
+                                                    data: data_chart1.noPro
+                                                }],
+                                                dataLabels: {
+                                                    enabled: false
+                                                },
+                                                xaxis: {
+                                                    categories: data_chart1.date,
+                                                    position: 'center'
+                                                },
+                                                yaxis: [
+                                                    {
+                                                        axisTicks: {
+                                                            show: true,
+                                                        },
+                                                        axisBorder: {
+                                                            show: true,
+                                                            color: '#008FFB'
+                                                        },
+                                                        labels: {
+                                                            style: {
+                                                                colors: '#008FFB',
+                                                            },
+                                                            formatter: function (val) {
+                                                                return val.toLocaleString('en-US') + ' VND'
+                                                            }
+                                                        },
+                                                        title: {
+                                                            text: "Income from saling product",
+                                                            style: {
+                                                                color: '#008FFB',
+                                                            }
+                                                        },
+                                                        tooltip: {
+                                                            enabled: true
+                                                        }
+                                                    },
+                                                    {
+                                                        seriesName: 'No.Order',
+                                                        opposite: true,
+                                                        axisTicks: {
+                                                            show: true,
+                                                        },
+                                                        axisBorder: {
+                                                            show: true,
+                                                            color: '#00E396'
+                                                        },
+                                                        labels: {
+                                                            style: {
+                                                                colors: '#00E396',
+                                                            },
+                                                            formatter: function (val) {
+                                                                return Number(val).toFixed(1).replace(/\.0$/, '')
+                                                            }
+                                                        },
+                                                        title: {
+                                                            text: "Number of orders",
+                                                            style: {
+                                                                color: '#00E396',
+                                                            }
+                                                        },
+                                                    },
+                                                    {
+                                                        seriesName: 'No.Product',
+                                                        opposite: true,
+                                                        axisTicks: {
+                                                            show: true,
+                                                        },
+                                                        axisBorder: {
+                                                            show: true,
+                                                            color: '#FEB019'
+                                                        },
+                                                        labels: {
+                                                            style: {
+                                                                colors: '#FEB019',
+                                                            },
+                                                            formatter: function (val) {
+                                                                return Number(val).toFixed(1).replace(/\.0$/, '')
+                                                            }
+                                                        },
+                                                        title: {
+                                                            text: "Number of products",
+                                                            style: {
+                                                                color: '#FEB019',
+                                                            }
+                                                        }
+                                                    },
+                                                ],
+                                                tooltip: {
+                                                    fixed: {
+                                                        enabled: true,
+                                                        position: 'topLeft', // topRight, topLeft, bottomRight, bottomLeft
+                                                        offsetY: 30,
+                                                        offsetX: 60
+                                                    },
+                                                },
+                                                legend: {
+                                                    horizontalAlign: 'left',
+                                                    offsetX: 40
+                                                }
+                                            };
+
+                                            var chart = new ApexCharts(document.querySelector("#layout1-chart-1"), options);
+                                            chart.render();
+                                        }
+
+
+                                    }
+
+                                    const formatISODateToYYYYMMDD = (isoDateString) => {
+                                        // Create a Date object from the ISO date string
+                                        const originalDate = new Date(isoDateString);
+
+                                        // Extract components and format the date to "yyyy-MM-dd"
+                                        const year = originalDate.getFullYear();
+                                        const month = String(originalDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+                                        const day = String(originalDate.getDate()).padStart(2, '0');
+
+                                        const formattedDate = `${year}-${month}-${day}`;
+
+                                        return formattedDate;
+                                    }
+
+                                    const getOrderByTypeTimePeriod = (params) => {
+                                        axios({
+                                            method: 'get',
+                                            params,
+                                            url: `/orders/time`,
+                                        })
+                                            .then(res => {
+                                                var startDate = formatISODateToYYYYMMDD(res.data.startDate)
+                                                var endDate = formatISODateToYYYYMMDD(res.data.endDate)
+                                                $('#start_date').val(startDate)
+                                                $('#end_date').val(endDate)
+
+                                                var chart1 = $('#data-chart1')
+                                                var orderList = $('#order-list')
+                                                chart1.html('')
+                                                orderList.html('')
+                                                res.data.orders.map(order => {
+                                                    chart1.append(`<div class="data-chart1" data-id=${order._id} data-total=${order.totalPrice}
+                                                                        data-date=${order.dateOfPurchase} data-noPro=${order.noPro}></div>`)
+
+                                                    loadOrderList(order, orderList)
+                                                })
+
+                                                const handleChooseTimePeriod = (date, typeTimePeriod) => {
+                                                    if (typeTimePeriod === 'Today' || typeTimePeriod === 'Yesterday') {
+                                                        // Format time for 'Today'
+                                                        return date
+                                                    } else if (typeTimePeriod === 'Within the last 7 days' || typeTimePeriod === 'This month' || typeTimePeriod === 'From-To') {
+                                                        if (params.startDate && params.endDate) {
+                                                            if (calculateNumberOfDays(params.startDate, params.endDate) > 45) {
+                                                                return (1900 + date.getYear()) + "-" + (date.getMonth() + 1);
+                                                            }
+                                                            return (1900 + date.getYear()) + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+                                                        }
+                                                        // Format date for 'Week' or 'Month'
+                                                        return (1900 + date.getYear()) + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+                                                    } else if (typeTimePeriod === 'This year') {
+                                                        // Format month for 'Year'
+                                                        return (1900 + date.getYear()) + "-" + (date.getMonth() + 1);
+                                                    }
+                                                }
+
+                                                var data_chart1 = {
+                                                    income: [],
+                                                    noOrder: [],
+                                                    noPro: [],
+                                                    date: []
+                                                }
+                                                $('.data-chart1').each((index, element) => {
+                                                    var date = new Date($(element).data('date'));
+                                                    var xValue = handleChooseTimePeriod(date, params.typeTimePeriod);
+                                                    var income = $(element).data('total');
+                                                    var noPro = $(element).data('nopro');
+
+                                                    // Check if an entry with the same x value already exists
+                                                    var existingEntryIndex = data_chart1.date.findIndex(entry => entry === xValue);
+
+                                                    if (existingEntryIndex !== -1) {
+                                                        // If it exists, update the existing entry by adding the y values
+                                                        data_chart1.income[existingEntryIndex] += income;
+                                                        data_chart1.noOrder[existingEntryIndex] += 1
+                                                        data_chart1.noPro[existingEntryIndex] += noPro
+                                                    } else {
+                                                        // If it doesn't exist, create a new entry in the array
+                                                        data_chart1.income.push(income)
+                                                        data_chart1.noOrder.push(1)
+                                                        data_chart1.noPro.push(noPro)
+                                                        data_chart1.date.push(xValue)
+                                                    }
+                                                })
+
+                                                buildChart1(params.typeTimePeriod, data_chart1, params)
+                                            })
+                                            .catch(error => console.log(error))
+                                    }
+
+                                    document.addEventListener("DOMContentLoaded", () => {
+                                        var params = {
+                                            time: new Date(),
+                                            typeTimePeriod: 'Within the last 7 days'
+                                        }
+                                        getOrderByTypeTimePeriod(params)
+
+                                        var typeTimePeriod = 'Today'
+                                        $('.dropdown-item').on('click', function () {
+                                            // Get the text content of the clicked item
+                                            var selectedItem = $(this).text();
+
+                                            $('#dropdownMenuButton1').text(selectedItem)
+
+                                            typeTimePeriod = selectedItem
+                                            var params = {
+                                                time: new Date(),
+                                                typeTimePeriod
+                                            }
+                                            getOrderByTypeTimePeriod(params)
+                                        })
+
+                                        $('#btn-search').on('click', (e) => {
+                                            var startDate = $('#start_date').val()
+                                            var endDate = $('#end_date').val()
+
+                                            console.log("The number of date: " + calculateNumberOfDays(startDate, endDate))
+
+                                            getOrderByTypeTimePeriod({ startDate, endDate, typeTimePeriod: 'From-To' })
+                                        })
+
+                                    });
+
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+                                        <div>
+                                            <h4 class="mb-3">Order List</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="table-responsive rounded mb-3">
+                                        <table class="data-table table mb-0 tbl-server-info">
+                                            <thead class="bg-white text-uppercase">
+                                                <tr class="ligth ligth-data">
+                                                    <th>
+                                                        <div class="checkbox d-inline-block">
+                                                            <input type="checkbox" class="checkbox-input"
+                                                                id="checkbox1">
+                                                            <label for="checkbox1" class="mb-0"></label>
+                                                        </div>
+                                                    </th>
+                                                    <th>Id</th>
+                                                    <th>Customer</th>
+                                                    <th>Total Amount</th>
+                                                    <th>Date</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="ligth-body" id="order-list"></tbody>
+                                        </table>
+                                        <div class="modal fade bd-example-modal-xl" id="view" tabindex="-1"
+                                            role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-xl" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-body">
+                                                        <div
+                                                            class="card card-block card-stretch card-height print rounded">
+                                                            <div
+                                                                class="card-header d-flex justify-content-between bg-primary header-invoice">
+                                                                <div class="iq-header-title">
+                                                                    <h4 class="card-title mb-0 bill-name">Order Detail
+                                                                    </h4>
+                                                                </div>
+                                                                <div class="invoice-btn">
+                                                                    <button type="button"
+                                                                        class="btn btn-primary-dark mr-2"><i
+                                                                            class="las la-print"></i>
+                                                                        Print</button>
+                                                                    <button type="button"
+                                                                        class="btn btn-primary-dark"><i
+                                                                            class="las la-file-download"></i>PDF</button>
+                                                                </div>
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <div class="row">
+                                                                    <div class="col-lg-12">
+                                                                        <div class="table-responsive-sm">
+                                                                            <table class="table">
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                        <th scope="col">Order ID
+                                                                                        </th>
+                                                                                        <th scope="col">Order Date
+                                                                                        </th>
+                                                                                        <th scope="col">Order Status
+                                                                                        </th>
+                                                                                        <th scope="col">Amount Given By
+                                                                                            Customer</th>
+                                                                                        <th scope="col">Excess Amount
+                                                                                            Paid Back</th>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody id="info-order"></tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-12">
+                                                                        <h5 class="mb-3">Order Summary</h5>
+                                                                        <div class="table-responsive-sm">
+                                                                            <table class="table">
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                        <th class="text-center"
+                                                                                            scope="col">#</th>
+                                                                                        <th scope="col">Product</th>
+                                                                                        <th class="text-center"
+                                                                                            scope="col">Quantity
+                                                                                        </th>
+                                                                                        <th class="text-center"
+                                                                                            scope="col">Price</th>
+                                                                                        <th class="text-center"
+                                                                                            scope="col">Totals</th>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody id="info-order_details"></tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="offset-lg-8 col-lg-4">
+                                                                        <div class="or-detail rounded">
+                                                                            <div
+                                                                                class="ttl-amt py-2 px-3 d-flex justify-content-between align-items-center">
+                                                                                <h6>Total</h6>
+                                                                                <h3 class="text-primary font-weight-700"
+                                                                                    id="total_price"></h3>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-dismiss="modal">Close</button>
+                                                        <button type="button" class="btn btn-primary">Print</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Page end  -->
+                        </div>
+                    </div>
+
+                    {{!-- Order List --}}
+                    <script>
+                        document.addEventListener('DOMContentLoaded', () => {
+                            $('#view').on('show.bs.modal', function (e) {
+                                var button = $(e.relatedTarget)
+                                var order = button.data('order')
+                                console.log(order.payment)
+
+                                $('#info-order').html(`
+                                        <tr>
+                                            <td>${order._id}</td>
+                                            <td>${order.dateOfPurchase}</td>
+                                            <td><span
+                                                    class="badge badge-danger">${order.payment.paymentStatus}</span>
+                                            </td>
+                                            <td>
+                                                <p class="mb-0">${order.amountGivenByCustomer}</p>
+                                            </td>
+                                            <td>
+                                                <p class="mb-0">${order.excessAmountPaidBack}</p>
+                                            </td>
+                                        </tr>
+                                    `)
+                                $('#info-order_details').html('')
+                                order.orderDetails.map((orderDetail, index) => {
+                                    $('#info-order_details').append(`
+                                        <tr>z
+                                            <th class="text-center"
+                                                scope="row">${index + 1}</th>
+                                            <td>
+                                                <h6 class="mb-0">${orderDetail.productId.productName}</h6>
+                                            </td>
+                                            <td class="text-center">${orderDetail.quantity}</td>
+                                            <td class="text-center">${orderDetail.unitPrice}</td>
+                                            <td class="text-center">
+                                                <b>${orderDetail.totalPrice}</b>
+                                            </td>
+                                        </tr>
+                                    `)
+                                })
+                                $('#total_price').text(order.totalPrice)
+                            })
+                        })
+                    </script>
+                </div>
+                <!-- Page end  -->
+            </div>
+        </div>
+    </div>
+    <!-- Wrapper End-->
+    {{> footer}}
+</body>

@@ -1,0 +1,190 @@
+<!-- loader Start -->
+<div id="loading">
+    <div id="loading-center">
+    </div>
+</div>
+<!-- loader END -->
+<!-- Wrapper Start -->
+<div class="wrapper">
+
+    {{> sidebar}}
+    {{> navbar}}
+
+    <div class="modal fade" id="new-order" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="popup text-left">
+                        <h4 class="mb-3">New Order</h4>
+                        <div class="content create-workform bg-body">
+                            <div class="pb-3">
+                                <label class="mb-2">Email</label>
+                                <input type="text" class="form-control" placeholder="Enter Name or Email">
+                            </div>
+                            <div class="col-lg-12 mt-4">
+                                <div class="d-flex flex-wrap align-items-ceter justify-content-center">
+                                    <div class="btn btn-primary mr-4" data-dismiss="modal">Cancel</div>
+                                    <div class="btn btn-outline-primary" data-dismiss="modal">Create</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-page">
+        <div class="container-fluid add-form-list">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between">
+                            <div class="header-title">
+                                <h4 class="card-title">Add Product</h4>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <form id="form-add" data-toggle="" enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Name *</label>
+                                            <input type="text" min="1" class="form-control" placeholder="Enter Name"
+                                                data-errors="Nhập tên sản phẩm." required name="productName">
+                                            <div class="help-block with-errors"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Barcode *</label>
+                                            <input type="text" min="1" class="form-control" placeholder="Nhập mã vạch"
+                                                data-errors="Nhập mã vạch." required name="barcode">
+                                            <div class="help-block with-errors"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Category *</label>
+                                            <select id="categorySelect1" name="category"
+                                                class="selectpicker form-control" data-style="py-0"></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Import Price *</label>
+                                            <input type="number" class="form-control" placeholder="Nhập giá nhập khẩu"
+                                                data-errors="vui lòng nhập giá nhập khẩu." required name="importPrice">
+                                            <div class="help-block with-errors"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Retail Price *</label>
+                                            <input type="number" class="form-control" placeholder="Enter Price"
+                                                data-errors="Please Enter Price." required name="retailPrice">
+                                            <div class="help-block with-errors"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Image</label>
+                                            <input type="file" class="form-control image-file" name="files"
+                                                accept="image/*" onchange="readURL(this);">
+                                            <img id="blah" src="" alt="your image" class="d-none" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Description *</label>
+                                            <textarea class="form-control" rows="4" name="description"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12" id="msg"></div>
+                                </div>
+                                <button type="submit" class="btn btn-primary mr-2">Add
+                                    Product</button>
+                                <button type="reset" class="btn btn-danger">Refresh</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Page end  -->
+        </div>
+    </div>
+</div>
+<!-- Wrapper End-->
+{{> footer }}
+
+<script>
+    $(function () {
+
+        axios.get('/api/categories')
+            .then(res => {
+                if (res.status === 200) {
+                    const data = res.data;
+                    data.forEach(item => {
+                        console.log(item);
+                        $('#categorySelect1').append($(`<option value="${item._id}">${item.name}</option>`));
+                    });
+
+                    // Initialize the selectpicker
+                    $('#categorySelect1').selectpicker('refresh');
+                }
+            })
+            .catch(err => console.error(err));
+
+        $('#form-add').on('submit', evt => {
+            evt.preventDefault();
+            console.log(123)
+            const formData = new FormData(evt.target);
+            axios.post('/api/products', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            })
+                .then(response => {
+                    // Handle the success response
+                    if (response.status === 201) {
+                        $('#msg').html($(`<div class="alert alert-success" role="alert">
+                        <div class="iq-alert-icon">
+                            <i class="ri-information-line"></i>
+                        </div>
+                        <div class="iq-alert-text"><b>${response.data.message}</b></div>
+                    </div>`))
+                        setTimeout(() => {
+                            window.location.href = '/products';
+                        }, 2000);
+                    }
+                })
+                .catch(error => {
+                    console.log(error)
+                    $('#msg').html($(`<div class="alert alert-danger" role="alert">
+                        <div class="iq-alert-icon">
+                            <i class="ri-information-line"></i>
+                        </div>
+                        <div class="iq-alert-text"><b>${error.message}</b></div>
+                    </div>`))
+                });
+        })
+    });
+
+
+
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                if ($('#blah').hasClass('d-none')) {
+                    $('#blah').removeClass('d-none')
+                }
+                $('#blah').attr('src', e.target.result).width(150).height(200);
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
